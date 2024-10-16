@@ -58,4 +58,9 @@ export class CatalogService {
       await this.productRepository.update({ id }, updateObject);
     return 'update successfully';
   }
+
+  async deleteProduct(id: number) {
+    const product = await this.findOne(id);
+    await this.productRepository.remove(product);
+  }
 }
