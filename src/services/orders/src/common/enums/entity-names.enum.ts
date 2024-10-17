@@ -1,3 +1,3 @@
 export enum EntityNames {
-  Order = 'order',
+  Orders = 'orders',
 }

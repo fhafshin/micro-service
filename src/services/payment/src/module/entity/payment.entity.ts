@@ -7,7 +7,7 @@ export class PaymentEntity {
   id: number;
 
   @Column()
-  userId: number;
+  customerId: number;
 
   @Column()
   amount: number;

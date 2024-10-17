@@ -1,4 +1,4 @@
 export enum EntityNames{
 
-  Payment="payment"
+  Payment="payments"
 }

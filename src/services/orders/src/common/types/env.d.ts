@@ -9,5 +9,8 @@ namespace NodeJS {
     DB_NAME: string;
     DB_USERNAME: string;
     DB_PASSWORD: string;
+    CUSTOMERS_SERVICE: string;
+    CATALOG_SERVICE: string;
+    PAYMENT_SERVICE: string;
   }
 }

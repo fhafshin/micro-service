@@ -1,6 +1,6 @@
 import {
   Body,
-  Controller,
+  Controller, Delete,
   Get,
   Param,
   ParseIntPipe,
@@ -38,7 +38,7 @@ export class CatalogControoler {
   ) {
     return this.catalogService.updateProduct(data, id);
   }
-  @Patch('delete-product/:id')
+  @Delete('delete-product/:id')
   deleteProduct(@Param('id', ParseIntPipe) id: number) {
     return this.catalogService.deleteProduct(id);
   }

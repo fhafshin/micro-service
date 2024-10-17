@@ -16,11 +16,11 @@ export class PaymentService {
   ) {}
 
   async createPayment(data: CreatePaymentDto) {
-    const { amount, userId } = data;
+    const { amount, customerId } = data;
 
     const payment = this.PaymentRepository.create({
       amount,
-      userId,
+      customerId,
       status: STATUS.PENDING,
     });
 
