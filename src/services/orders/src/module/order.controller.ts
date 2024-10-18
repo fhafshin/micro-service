@@ -4,10 +4,11 @@ import {
   Get,
   Param,
   ParseIntPipe,
+  Patch,
   Post,
 } from '@nestjs/common';
 import { OrderService } from './order.service';
-import { CreateOrderDto } from './dto/order-dto';
+import { CreateOrderDto, UpdateOrderDto } from './dto/order-dto';
 import { ApiConsumes, ApiTags } from '@nestjs/swagger';
 import { SwaggerConsumes } from '../common/enums/swagger-consumes.enum';
 @ApiTags('order')
@@ -28,5 +29,13 @@ export class OrderController {
   @Post('create-order')
   createOrder(@Body() data: CreateOrderDto) {
     return this.orderService.createOrder(data);
+  }
+  @ApiConsumes(SwaggerConsumes.UrlEncoded)
+  @Patch('update-order/:id')
+  updateOrder(
+    @Param('id', ParseIntPipe) id: number,
+    @Body() status: UpdateOrderDto,
+  ) {
+    return this.orderService.updateOrder(id, status);
   }
 }

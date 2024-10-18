@@ -1,0 +1,19 @@
+syntax="proto3";
+
+package payment;
+
+service PaymentGrpc {
+rpc createPayment(NewPaymentRequest) returns (Payment){}
+}
+
+message NewPaymentRequest{
+
+int32 customerId=1;
+int32 amount=2;
+}
+
+message Payment{
+int32 id=1;
+
+}
+

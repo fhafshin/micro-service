@@ -3,21 +3,42 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { REQUEST } from '@nestjs/core';
 import { Request } from 'express';
-import { CreateOrderDto } from './dto/order-dto';
+import { CreateOrderDto, UpdateOrderDto } from './dto/order-dto';
 import { CreatePaymentDto } from '../common/dto/payment-dto';
 import { StatusPayment } from '../common/enums/status-payment.enum';
 import { OrderEntity } from './entity/order.entity';
+import { EncoderFactoryOrder } from './state/encoder-factory-order';
+import { OrderCanceledState } from './state/order-canceled-state';
+import { OrderProcessingState } from './state/order-processing-state';
+import { OrderShippedState } from './state/order-shipped-state';
+import { OrderState } from './state/order-state';
 
 @Injectable({ scope: Scope.REQUEST })
 export class OrderService {
-  customerService = process.env.CUSTOMERS_SERVICE;
-  productService = process.env.CATALOG_SERVICE;
-  paymentService = process.env.PAYMENT_SERVICE;
+  private customerService = process.env.CUSTOMERS_SERVICE;
+  private productService = process.env.CATALOG_SERVICE;
+  private paymentService = process.env.PAYMENT_SERVICE;
+  private encoderFactoryOrder: EncoderFactoryOrder;
   constructor(
     @InjectRepository(OrderEntity)
     private orderRepository: Repository<OrderEntity>,
     @Inject(REQUEST) private request: Request,
-  ) {}
+  ) {
+    this.encoderFactoryOrder = new EncoderFactoryOrder();
+    this.encoderFactoryOrder.addEncode(
+      StatusPayment.CANCELED,
+      new OrderCanceledState(),
+    );
+    this.encoderFactoryOrder.addEncode(
+      StatusPayment.PROCESSING,
+      new OrderProcessingState(),
+    );
+
+    this.encoderFactoryOrder.addEncode(
+      StatusPayment.SHIPPED,
+      new OrderShippedState(),
+    );
+  }
 
   async findOne(id: number) {
     const order = await this.orderRepository.findOneBy({ id });
@@ -75,5 +96,15 @@ export class OrderService {
 
     await this.orderRepository.save(order);
     return [customerRes, productRes, paymentRes];
+  }
+
+  updateOrder(id: number, status: UpdateOrderDto) {
+    console.log(status.status);
+    const objectState = this.encoderFactoryOrder.createEncoder(
+      Number(status.status),
+    );
+
+    const orderState = new OrderState(objectState);
+    orderState.doAction(id);
   }
 }
