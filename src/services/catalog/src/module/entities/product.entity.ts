@@ -10,5 +10,5 @@ export class ProductEntity {
   @Column()
   price: number;
   @Column()
-  quality: number;
+  quantity: number;
 }

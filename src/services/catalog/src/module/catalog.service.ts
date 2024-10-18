@@ -1,7 +1,13 @@
-import { Inject, Injectable, NotFoundException, Scope } from '@nestjs/common';
+import {
+  BadRequestException,
+  Inject,
+  Injectable,
+  NotFoundException,
+  Scope,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { ProductEntity } from './entities/product.entity';
-import { DeepPartial, Repository } from 'typeorm';
+import { DataSource, DeepPartial, Repository } from 'typeorm';
 import { REQUEST } from '@nestjs/core';
 import { Request } from 'express';
 import { CreateProductDto, UpdateProductDto } from './dto/product-dto';
@@ -12,6 +18,7 @@ export class CatalogService {
     @InjectRepository(ProductEntity)
     private productRepository: Repository<ProductEntity>,
     @Inject(REQUEST) private request: Request,
+    private dataSource: DataSource,
   ) {}
 
   getHello() {
@@ -25,8 +32,8 @@ export class CatalogService {
   }
 
   async createProduct(data: CreateProductDto) {
-    const { name, price, quality } = data;
-    const product = this.productRepository.create({ name, price, quality });
+    const { name, price, quantity } = data;
+    const product = this.productRepository.create({ name, price, quantity });
     return this.productRepository.save(product);
   }
 
@@ -39,7 +46,7 @@ export class CatalogService {
   async updateProduct(data: UpdateProductDto, id: number) {
     const product = await this.findOne(id);
 
-    const { name, price, quality } = data;
+    const { name, price, quantity } = data;
     console.log(id);
     const updateObject: DeepPartial<ProductEntity> = {};
     if (name && name !== product.name) {
@@ -50,13 +57,42 @@ export class CatalogService {
       updateObject['price'] = price;
       console.log('price');
     }
-    if (quality && quality != product.quality) {
-      updateObject['quality'] = quality;
-      console.log('quality');
+    if (quantity && quantity != product.quantity) {
+      updateObject['quantity'] = quantity;
+      console.log('quantity');
     }
     if (Object.keys(updateObject).length !== 0)
       await this.productRepository.update({ id }, updateObject);
     return 'update successfully';
+  }
+
+  async order(id: number) {
+    const queryRunner = this.dataSource.createQueryRunner();
+    queryRunner.connect();
+    await queryRunner.startTransaction();
+
+    const product = await queryRunner.manager.findOneBy(ProductEntity, { id });
+    if (!product) throw new NotFoundException('product not found');
+    if (product.quantity < 1)
+      throw new BadRequestException('product quantity not valid');
+
+    product.quantity -= 1;
+    await queryRunner.manager.save(product);
+    await queryRunner.commitTransaction();
+    await queryRunner.release();
+    return product;
+  }
+
+  async restore(id: number) {
+    const queryRunner = this.dataSource.createQueryRunner();
+    queryRunner.connect();
+    await queryRunner.startTransaction();
+    const product = await queryRunner.manager.findOneBy(ProductEntity, { id });
+    product.quantity -= 1;
+    queryRunner.manager.save(product);
+    await queryRunner.commitTransaction();
+    await queryRunner.release();
+    return product;
   }
 
   async deleteProduct(id: number) {

@@ -11,5 +11,8 @@ export function TypeormConfig(): TypeOrmModuleOptions {
     database: DB_NAME,
     username: DB_USERNAME,
     password: DB_PASSWORD,
+    autoLoadEntities: false,
+    synchronize: true,
+    entities: ['dist/**/**/*.entity.{ts,js}', 'dist/**/**/**/*.entity.{ts,js}'],
   };
 }

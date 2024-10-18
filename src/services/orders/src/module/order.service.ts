@@ -1,12 +1,12 @@
 import { Inject, Injectable, NotFoundException, Scope } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { OrderEntity } from './entity/order.entity';
 import { Repository } from 'typeorm';
 import { REQUEST } from '@nestjs/core';
 import { Request } from 'express';
 import { CreateOrderDto } from './dto/order-dto';
 import { CreatePaymentDto } from '../common/dto/payment-dto';
 import { StatusPayment } from '../common/enums/status-payment.enum';
+import { OrderEntity } from './entity/order.entity';
 
 @Injectable({ scope: Scope.REQUEST })
 export class OrderService {
@@ -36,22 +36,37 @@ export class OrderService {
     const customer = await fetch(
       `${this.customerService}/find-one/${customerId}`,
     );
+
     if (!customer) throw new NotFoundException('customer not found');
     const customerRes = await customer.json();
-    const product = await fetch(`${this.productService}/find-one/${productId}`);
+    let product = await fetch(`${this.productService}/find-one/${productId}`);
     if (!product) throw new NotFoundException('not found product');
+
+    product = await fetch(
+      `${this.productService}/update-product-order/${productId}`,
+      { method: 'PATCH' },
+    );
+    //console.log(await product.json());
     const productRes = await product.json();
+
     const paymentPayload: CreatePaymentDto = {
       customerId,
-      amount: productRes.amount,
+      amount: productRes.price,
     };
+    //console.log(await JSON.stringify(paymentPayload));
     const payment = await fetch(`${this.paymentService}/create-payment`, {
       method: 'POST',
-      body: await JSON.stringify(paymentPayload),
+      headers: {
+        // Accept: 'application/json',
+        //'Content-Type': 'application/json; charset=utf-8',
+        'Content-Type': 'application/x-www-form-urlencoded',
+      },
+      body: `customerId=${customerId}&amount=${productRes.price}`,
     });
+
     const paymentRes = await payment.json();
 
-    const order = await this.orderRepository.create({
+    const order = this.orderRepository.create({
       productId,
       customerId,
       status: StatusPayment.PENDING,

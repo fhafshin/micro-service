@@ -1,4 +1,4 @@
-import { IsNumberString, IsString} from 'class-validator';
+import { IsNumberString, IsString } from 'class-validator';
 import { ApiProperty, PartialType } from '@nestjs/swagger';
 
 export class CreateProductDto {
@@ -10,7 +10,7 @@ export class CreateProductDto {
   price: number;
   @IsNumberString()
   @ApiProperty()
-  quality: number;
+  quantity: number;
 }
 
 export class UpdateProductDto extends PartialType(CreateProductDto) {}

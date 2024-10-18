@@ -26,7 +26,7 @@ export class PaymentService {
 
     await this.PaymentRepository.save(payment);
 
-    return 'create payment successfully';
+    return payment;
   }
 
   async findOne(id: number) {
@@ -51,5 +51,11 @@ export class PaymentService {
     }
 
     return 'update successfully';
+  }
+
+  async deletePayment(id: number) {
+    const payment = await this.findOne(id);
+    this.PaymentRepository.delete(payment);
+    return 'deleted successfully';
   }
 }

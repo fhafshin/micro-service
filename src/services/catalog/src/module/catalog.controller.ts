@@ -1,6 +1,7 @@
 import {
   Body,
-  Controller, Delete,
+  Controller,
+  Delete,
   Get,
   Param,
   ParseIntPipe,
@@ -16,9 +17,9 @@ import { SwaggerConsumes } from '../common/enums/swagger-consumes.enum';
 export class CatalogControoler {
   constructor(private readonly catalogService: CatalogService) {}
 
-  @Get()
-  getHello() {
-    return this.catalogService.getHello();
+  @Get('/find-one/:id')
+  findOne(@Param('id', ParseIntPipe) id: number) {
+    return this.catalogService.findOne(id);
   }
 
   @Get('/findAll')
@@ -37,6 +38,16 @@ export class CatalogControoler {
     @Param('id', ParseIntPipe) id: number,
   ) {
     return this.catalogService.updateProduct(data, id);
+  }
+
+  @Patch('update-product-order/:id')
+  order(@Param('id', ParseIntPipe) id: number) {
+    return this.catalogService.order(id);
+  }
+
+  @Patch('update-product-restore/:id')
+  restore(@Param('id', ParseIntPipe) id: number) {
+    return this.catalogService.restore(id);
   }
   @Delete('delete-product/:id')
   deleteProduct(@Param('id', ParseIntPipe) id: number) {

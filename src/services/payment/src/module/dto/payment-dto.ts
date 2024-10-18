@@ -1,12 +1,12 @@
 import { ApiProperty, PartialType } from '@nestjs/swagger';
-import { IsNumberString } from 'class-validator';
+import { IsNumber } from 'class-validator';
 
 export class CreatePaymentDto {
   @ApiProperty()
-  @IsNumberString()
+  @IsNumber()
   customerId: number;
   @ApiProperty()
-  @IsNumberString()
+  @IsNumber()
   amount: number;
 }
 
