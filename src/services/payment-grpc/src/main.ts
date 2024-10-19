@@ -4,16 +4,17 @@ import { join } from 'path';
 import { MicroserviceOptions, Transport } from '@nestjs/microservices';
 
 async function bootstrap() {
-  console.log(join(__dirname, 'protos/hero.proto'));
   const app = await NestFactory.createMicroservice<MicroserviceOptions>(
     AppModule,
     {
       transport: Transport.GRPC,
       options: {
+        url: '0.0.0.0:8000',
         package: 'payment',
         protoPath: join(__dirname, 'protos/payment.proto'),
       },
     },
   );
+  app.listen();
 }
 bootstrap();

@@ -9,6 +9,7 @@ import { AppController } from './app.controller';
     ConfigModule.forRoot({
       isGlobal: true,
       envFilePath: join(process.cwd(), '.env'),
+
     }),
     TypeOrmModule.forRoot(TypeormConfig()),
   ],

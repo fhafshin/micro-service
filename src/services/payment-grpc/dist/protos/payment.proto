@@ -3,17 +3,15 @@ syntax="proto3";
 package payment;
 
 service PaymentGrpc {
-rpc createPayment(NewPaymentRequest) returns (Payment){}
+rpc createPayment(NewPaymentRequest) returns (PaymentRes){}
 }
 
 message NewPaymentRequest{
-
 int32 customerId=1;
 int32 amount=2;
 }
 
-message Payment{
+message PaymentRes{
 int32 id=1;
-
 }
 
