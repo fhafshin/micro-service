@@ -9,6 +9,5 @@ RUN pnpm install
 COPY . .
 EXPOSE ${PORT}
 RUN pnpm build
-CMD["pnpm","start"]
+CMD ["pnpm","start"]
 
-ENTRYPOINT ["top", "-b"]
