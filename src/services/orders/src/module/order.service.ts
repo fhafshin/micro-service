@@ -12,7 +12,7 @@ import { OrderCanceledState } from './state/order-canceled-state';
 import { OrderProcessingState } from './state/order-processing-state';
 import { OrderShippedState } from './state/order-shipped-state';
 import { OrderState } from './state/order-state';
-
+import * as amqp from 'amqplib';
 @Injectable({ scope: Scope.REQUEST })
 export class OrderService {
   private customerService = process.env.CUSTOMERS_SERVICE;
@@ -106,5 +106,15 @@ export class OrderService {
 
     const orderState = new OrderState(objectState);
     orderState.doAction(id);
+  }
+
+  async rabbitmq() {
+    const connRabbitmq = await amqp.connect('amqp://localhost');
+    const channel = await connRabbitmq.createChannel();
+    await channel.assertQueue('orders', {
+      durable: true,
+    });
+    const message = Buffer.from(JSON.stringify({ text: 'salam' }));
+    channel.sendToQueue('orders', message);
   }
 }

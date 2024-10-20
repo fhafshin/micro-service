@@ -38,4 +38,9 @@ export class OrderController {
   ) {
     return this.orderService.updateOrder(id, status);
   }
+
+  @Get('test-rabimq')
+  rabbitmq() {
+    return this.orderService.rabbitmq();
+  }
 }

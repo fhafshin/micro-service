@@ -11,6 +11,7 @@ import { DataSource, DeepPartial, Repository } from 'typeorm';
 import { REQUEST } from '@nestjs/core';
 import { Request } from 'express';
 import { CreateProductDto, UpdateProductDto } from './dto/product-dto';
+import { notifications } from '../messages';
 
 @Injectable({ scope: Scope.REQUEST })
 export class CatalogService {
@@ -99,5 +100,9 @@ export class CatalogService {
     const product = await this.findOne(id);
     await this.productRepository.remove(product);
     return 'deleted successfully';
+  }
+
+  findAllMessages() {
+    return notifications;
   }
 }

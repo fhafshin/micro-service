@@ -53,4 +53,9 @@ export class CatalogControoler {
   deleteProduct(@Param('id', ParseIntPipe) id: number) {
     return this.catalogService.deleteProduct(id);
   }
+
+  @Get('mesages')
+  finAllMesages() {
+    return this.catalogService.findAllMessages();
+  }
 }
