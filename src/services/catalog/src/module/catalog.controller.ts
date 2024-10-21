@@ -12,6 +12,9 @@ import { CatalogService } from './catalog.service';
 import { CreateProductDto, UpdateProductDto } from './dto/product-dto';
 import { ApiConsumes, ApiTags } from '@nestjs/swagger';
 import { SwaggerConsumes } from '../common/enums/swagger-consumes.enum';
+import createRedisClient from '../cache';
+import { getRawAsset } from 'node:sea';
+
 @ApiTags('catalog')
 @Controller()
 export class CatalogControoler {
@@ -57,5 +60,22 @@ export class CatalogControoler {
   @Get('mesages')
   finAllMesages() {
     return this.catalogService.findAllMessages();
+  }
+
+  @Get('test-site')
+  testSite() {
+    // this.run(data);
+    //console.log(this.random());
+  }
+  @Get('set-redis')
+  async setRedis() {
+    const cache = await createRedisClient();
+    cache.set('object', JSON.stringify({ name: 'hesam' }));
+  }
+
+  @Get('get-redis')
+  async getRedis() {
+    const cache = await createRedisClient();
+    console.log(await cache.get('object'));
   }
 }
