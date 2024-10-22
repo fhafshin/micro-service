@@ -2,13 +2,14 @@ import axios from 'axios';
 
 import * as crom from 'node-cron';
 export class Runner {
-  counter = 160000009;
+  counter = 97909000;
   count = 0;
+  countErr = 0;
   async testSite() {
     //
     //this.run2();
     crom.schedule('*/1 * * * * *', async () => {
-      for (let i = 0; i < 31; i++) {
+      for (let i = 0; i < 45; i++) {
         const data = await this.getData(this.counter);
         //   console.log(data);
         await this.run(data, this.counter);
@@ -44,8 +45,8 @@ export class Runner {
       person: {
         partyTypeEnumId: 'PtyPerson',
         nationality: 'pclIR',
-        firstName: 'علی',
-        lastName: 'علوی',
+        firstName: '  علی',
+        lastName: '  علوی',
         gender: 'GrMale',
         ptidNationalCd: this.random(counter),
         fatherName: '',
@@ -59,8 +60,8 @@ export class Runner {
           mobileNumber: '09115003574',
           personProvince: '',
           personAreaCode: '',
-          personCity: '',
-          personPhone: '',
+          personCity: this.getRandomPhone(),
+          personPhone: this.getRandomPhone(),
           personPostalCode: '',
           personEmail: '',
           personAddress: '',
@@ -86,6 +87,11 @@ export class Runner {
       moquiSessionToken: 'J2P_14Zh5y8mdIEopUJv',
     };
   };
+
+  getRandomPhone() {
+    //console.log(Math.floor(Math.random() * 899999 + 100000).toString());
+    return Math.floor(Math.random() * 899999 + 100000).toString();
+  }
   run2 = () => {
     const data = this.getData2();
     axios
@@ -116,10 +122,10 @@ export class Runner {
         //return res.data;
       })
       .catch((err) => {
-        console.log(err);
+        console.log('error:' + (++this.countErr).toString());
         // return err;
       });
-    console.log(counter);
+    //console.log(counter);
   };
 
   random = (counter: number) => {
