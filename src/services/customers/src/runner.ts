@@ -2,7 +2,7 @@ import axios from 'axios';
 
 import * as crom from 'node-cron';
 export class Runner {
-  counter = 97909000;
+  counter = 84909000;
   count = 0;
   countErr = 0;
   async testSite() {

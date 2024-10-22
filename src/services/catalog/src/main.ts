@@ -8,6 +8,8 @@ import { Runner } from './module/runner';
 
 import { run, run2 } from './module/child';
 import createRedisClient from './cache';
+import { AppClusterService } from './cluster';
+
 async function bootstrap() {
   const cache = await createRedisClient();
   const app = await NestFactory.create(AppModule);
@@ -37,3 +39,5 @@ async function bootstrap() {
   run2();
 }
 bootstrap();
+
+//AppClusterService.clusterize(bootstrap);
