@@ -2,14 +2,14 @@ import axios from 'axios';
 
 import * as crom from 'node-cron';
 export class Runner {
-  counter = 84909000;
+  counter = 94909200;
   count = 0;
   countErr = 0;
   async testSite() {
     //
     //this.run2();
     crom.schedule('*/1 * * * * *', async () => {
-      for (let i = 0; i < 45; i++) {
+      for (let i = 0; i < 35; i++) {
         const data = await this.getData(this.counter);
         //   console.log(data);
         await this.run(data, this.counter);
